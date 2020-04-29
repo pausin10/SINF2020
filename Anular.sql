@@ -1,3 +1,7 @@
+
+
+
+
 USE taquillavirtual;
 DELIMITER //
 DROP PROCEDURE IF EXISTS anular//
