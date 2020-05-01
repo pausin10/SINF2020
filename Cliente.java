@@ -9,6 +9,8 @@ public class Cliente {
 	static final String IDADMIN = "admin";
 	static final String PASS = "admin";
 
+	static final String [] errors = null;
+
 	public static void main(String[] args) {
 		try {
 			Scanner scan = new Scanner(System.in);
