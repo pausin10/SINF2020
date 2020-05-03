@@ -4,12 +4,12 @@
 git clone https://github.com/pausin10/SINF2020
 ```
 
-**para actualizar los datos locales que teneis en vuestro ordenador y tener la version mas nueva subida:
+**para actualizar los datos locales que teneis en vuestro ordenador y tener la version mas nueva subida:**
 ```
 git pull
 ```
 
-**para enviar una actualizacion a github:
+**para enviar una actualizacion a github:**
 ```
 git add *
 git commit -m "lo que querais poner"
