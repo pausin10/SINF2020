@@ -194,6 +194,7 @@ public class Cliente {
 				query = "SELECT @idReserva;";
 				rs = state.executeQuery(query);
 				String idError = null;
+/******************* Cambiar **********************/
 				while (rs.next()) {
 					idError = rs.getString("@idReserva");
 					if (Integer.valueOf(idError) > 0) {
@@ -245,7 +246,6 @@ public class Cliente {
 			state.executeUpdate(sql);
 			return titulo;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -307,7 +307,7 @@ public class Cliente {
 			query = "SELECT @Penalizacion;";
 			answer = state.executeQuery(query);
 			String idError = null;
-
+/******************* Cambiar **********************/
 			while (answer.next()) {
 				idError = answer.getString("@Penalizacion");
 				if (Integer.valueOf(idError) >= 0) {
@@ -437,7 +437,6 @@ public class Cliente {
 				state.executeUpdate(sql);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -474,7 +473,6 @@ public class Cliente {
 			sql = "delete from Espectaculo where idEspectaculo='" + id + "'";
 			state.executeUpdate(sql);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -497,7 +495,6 @@ public class Cliente {
 			sql = "Delete from Evento where idEvento='" + id + "'";
 			state.executeUpdate(sql);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -551,7 +548,6 @@ public class Cliente {
 		try {
 			state.executeUpdate(sql);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -634,33 +630,22 @@ public class Cliente {
 			while (evento.next()) {
 
 				System.out.println("Id del Evento: " + evento.getString("idEvento")
-
 						+ "\nFecha: " + evento.getString("Fecha")
-
 						+ "\nHora: " + evento.getString("Hora")
-
 						+ "\nTitulo del Espectáculo: " + evento.getString("Titulo")
-
 						+ "\nTipo de Espectáculo: " + evento.getString("Tipo")
-
 						+ "\nDescripcion: " + evento.getString("Descripcion") + "\n");
-
 				System.out.println(
 						"-----------------------------------------------------------------------------------------------------");
-
 			}
-
 		} catch (SQLException e) {
-
 			e.printStackTrace();
-
 		}
-
 	}
 
 	private static void buscarCliente(Scanner scan, Statement state, String sql) {
 
-		System.out.println("Introduzca su identificador único(DNI)");
+		System.out.println("Introduzca su DNI");
 		String id = "'" + scan.nextLine() + "'";
 		sql = "select * from Cliente where DNI=" + id;
 		try {
@@ -673,53 +658,57 @@ public class Cliente {
 				String passwd = scan.nextLine();
 
 				if (answer.getString("passwd").trim().equals(passwd)) {
-					String dni = answer.getString("DNI");
-					String dniBien = dni;
 					String nombre = answer.getString("Nombre");
 					String apellidos = answer.getString("Apellidos");
+					String dni = answer.getString("DNI");
+					String dniBien = dni;
 					String iban = answer.getString("IBAN");
 					System.out.println("DNI: " + dni + "\n" + "Nombre: " + nombre + "\n" + "Apellidos: " + apellidos
 							+ "\n" + "IBAN: " + iban + "\n");
 					System.out.println("¿Desea modificarlos?(S/n):");
 					String opcion = scan.nextLine();
-					if (opcion.equals("s") || opcion.equals("")) {
+					
+					if (opcion.equals("s")) {
 						System.out.println("Cambie el valor o pulse enter para dejarlo como estaba");
-						System.out.println("DNI:");
-						dni = scan.nextLine();
-						System.out.println("Nombre:");
+						System.out.println("Nombre: ");
 						nombre = scan.nextLine();
-						System.out.println("Apellidos:");
+						System.out.println("Apellidos: ");
 						apellidos = scan.nextLine();
-						System.out.println("IBAN:");
+						System.out.println("DNI: ");
+						dni = scan.nextLine();
+						System.out.println("IBAN: ");
 						iban = scan.nextLine();
 
 						sql = "UPDATE Cliente SET ";
 
-						if (!(nombre.equals("")))
+						if (!(nombre.equals(""))){
 							sql = sql + "Nombre='" + nombre + "'";
-
+						}
 						if (!(apellidos.equals(""))) {
-							if (!(nombre.equals("")))
+							if (!(nombre.equals(""))){
 								sql = sql + ", ";
+							}
 							sql = sql + "Apellidos='" + apellidos + "'";
 						}
 
 						if (!(dni.equals(""))) {
-							if (!(nombre.equals("")) || !(apellidos.equals("")))
+							if (!(nombre.equals("")) || !(apellidos.equals(""))){
 								sql = sql + ", ";
+							}
 							sql = sql + "DNI='" + dni + "'";
 						}
 
 						if (!(iban.equals(""))) {
-							if (!(nombre.equals("")) || !(apellidos.equals("")) || !(dni.equals("")))
+							if (!(nombre.equals("")) || !(apellidos.equals("")) || !(dni.equals(""))){
 								sql = sql + ", ";
+							}
 							sql = sql + "IBAN='" + iban + "' ";
 						}
 						if (dni.equals("") && nombre.equals("") && apellidos.equals("") && iban.equals("")) {
-							System.out.println("No se ha modificado ningún campo a petición del Cliente.");
+							System.out.println("No se ha modificado ningún campo");
 						} else {
-
 							sql = sql + " WHERE DNI = '" + dniBien + "'";
+/* Comprobacion(No dejar) */
 							System.out.println(sql);
 							state.executeUpdate(sql);
 						}
@@ -772,14 +761,11 @@ public class Cliente {
 
 		sql = "insert into Cliente values ('" + dni + "','" + nombre + "','" + apellidos + "','" + passwd + "','" + iban
 				+ "')";
-		try
-
-		{
+		try{
 			state.executeUpdate(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private static void comprarEntrada(Scanner scan, Statement state, String sql) {
@@ -831,14 +817,14 @@ public class Cliente {
 					System.out.println("ID Localidad: " + answer.getString("idLocalidad"));
 				}
 			} catch (SQLException e) {
-
+				e.printStackTrace();
 			}
 
 			System.out.println("Introduzca el id o ids de las localidades que desea comprar: ");
 			String idLocalidad = scan.nextLine();
-			System.out.println("Introduzca su dni:");
+			System.out.println("Introduzca su dni: ");
 			String dni = scan.nextLine();
-			System.out.println("Introduzca el tipo de usuario para el que compra la entrada:");
+			System.out.println("Introduzca el tipo de usuario para el que compra la entrada: ");
 			String tipo = scan.nextLine();
 			String idLocalidadAux[] = idLocalidad.split(" ");
 			for (int i = 0; i < idLocalidadAux.length; i++) {
@@ -869,7 +855,7 @@ public class Cliente {
 		}
 
 	}
-
+/* */
 	private static boolean comprobarPermisos(Scanner scan) {
 		System.out.println("Esta tarea solo la puede realizar el administrador, por favor identificate.");
 		System.out.println("Introduce el id de administrador:");
@@ -884,4 +870,23 @@ public class Cliente {
 		}
 	}
 
+	private static void errores(){
+	
+		String []error = {"No se ha podido realizar la compra, localidad deteriorada."
+		,"No se ha podido realizar la compra, localidad ocupada."
+		,"No se ha podido realizar el pag, localidad ya comprada por uno mismo."
+		,"No se ha podido realizar la compra, localidad ya reservada."
+		,"Usuario no permitido para este evento."
+		,"Evento finalizado o cerrado."
+		,"No se puede prerreservar porque quedan menos de T2 minutos."
+		,"No se puede prerreservar porque ya esta prerreservada por uno mismo."
+		,"Grada/Recinto lleno."
+		,"Número máximo de entradas prerreservadas."
+		,"Anulacion no valida"};
+
+		System.out.println();
+
+
+
+	}
 }
