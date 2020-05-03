@@ -11,6 +11,11 @@ git pull
 
 **para enviar una actualizacion a github:**
 ```
+git push origin master
+```
+
+o tambien:
+```
 git add *
 git commit -m "lo que querais poner"
 git push
