@@ -4,7 +4,6 @@
 
 para actualizar los datos locales que teneis en vuestro ordenador y tener la version mas nueva subida:
 ```
-git fetch
 git pull
 ```
 
