@@ -3,6 +3,11 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS reservar//
 CREATE PROCEDURE reservar(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN tipoUsuario varchar(10), in DNI varchar(9), OUT idCompra int)
 
+/*pagar la prereserva*/
+/********************************************/
+/*Meteria otro valor de OUT que sea el de error, ahora mismo idCompra saca, si es correcto, la compra o si fallo el error*/
+/********************************************/
+
 BEGIN
 
     DECLARE current TIMESTAMP;
@@ -50,10 +55,13 @@ BEGIN
     EXECUTE stmt_hora;
 
     SET @fecha_hora = concat(@fecha,' ',@hora);
-    SET @minute = TIMESTAMPDIFF(MINUTE, @current, @fecha_hora); /* devuelve fecha_hora - current */
+    SET @minute = TIMESTAMPDIFF(MINUTE, @current, @fecha_hora); 
     SET @compra = concat("SELECT TiempoAnulacion into @T2 from Evento WHERE idEvento = ", ID_Evento, ";");
     PREPARE stmt_aux FROM @compra;
     EXECUTE stmt_aux;
+
+    /*T2 valor de tiempo del comienzo de un espectaculo*/
+    /*Comprobacion de si cuando queremos pagar una localidad, el usuario podra realizar dicha accion*/
 
     IF (@minute < @T2) THEN
         SET idCompra = -7;

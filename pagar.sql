@@ -2,7 +2,9 @@ USE taquillavirtual;
 DELIMITER //
 DROP PROCEDURE IF EXISTS comprar//
 CREATE PROCEDURE comprar(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN tipoUsuario varchar(10), in DNI varchar(9), OUT idCompra int)
-
+/********************************************/
+/*Meteria otro valor de OUT que sea el de error, ahora mismo idCompra saca, si es correcto, la compra o si fallo el error*/
+/********************************************/
 BEGIN
 
     DECLARE usuario VARCHAR(10);
