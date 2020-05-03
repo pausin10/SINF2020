@@ -872,7 +872,7 @@ public class Cliente {
 
 	private static void errores(){
 	
-		String []error = {"No se ha podido realizar la compra, localidad deteriorada."
+		String []error = {"Localidad deteriorada. Imposible realizar la compra"
 		,"No se ha podido realizar la compra, localidad ocupada."
 		,"No se ha podido realizar el pag, localidad ya comprada por uno mismo."
 		,"No se ha podido realizar la compra, localidad ya reservada."
