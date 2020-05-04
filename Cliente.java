@@ -886,7 +886,7 @@ public class Cliente {
 		,"Número máximo de entradas prerreservadas."
 		,"Anulacion no valida"};
 /*Podemos cambiar los valores de los errores para que sea as sencillo de mostrar*/ 
-		System.out.println(error[Integer.parseInt(idError)-1]);
+		System.out.println(error[-(Integer.parseInt(idError)-1)]);
 
 
 
