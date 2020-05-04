@@ -827,24 +827,26 @@ public class Cliente {
 			System.out.println("Introduzca el tipo de usuario para el que compra la entrada: ");
 			String tipo = scan.nextLine();
 			String idLocalidadAux[] = idLocalidad.split(" ");
+/*************************************************************** */
 			for (int i = 0; i < idLocalidadAux.length; i++) {
 				String query = "call comprar(" + Integer.valueOf(id) + "," + Integer.valueOf(idGrada) + ","
-						+ Integer.valueOf(idLocalidadAux[i]) + ",'" + tipo + "','" + dni + "',@idCompra);";
+						+ Integer.valueOf(idLocalidadAux[i]) + ",'" + tipo + "','" + dni + "',@idCompra,@Penalizacion);";
 				ResultSet rs = state.executeQuery(query);
 
-				query = "SELECT @idCompra;";
+				query = "SELECT @Penalizacion;";
 				rs = state.executeQuery(query);
-				String idError = null;
+				String idError = "";
 				while (rs.next()) {
-					idError = rs.getString("@idCompra");
+					idError = rs.getString("@Penalizacion");
 					if (Integer.valueOf(idError) > 0) {
 						System.out.println("Resultado de la compra " + (i + 1) + ": " + idError);
 					} else {
-						query = "select Descripcion from Error where idError=" + Integer.valueOf(idError);
+						errores(idError);
+						/*query = "select Descripcion from Error where idError=" + Integer.valueOf(idError);
 						rs = state.executeQuery(query);
 						while (rs.next()) {
 							System.out.println(rs.getString("Descripcion") + "\n");
-						}
+						}*/
 					}
 				}
 				
@@ -870,21 +872,21 @@ public class Cliente {
 		}
 	}
 
-	private static void errores(){
+	private static void errores(String idError){
 	
 		String []error = {"Localidad deteriorada. Imposible realizar la compra"
-		,"No se ha podido realizar la compra, localidad ocupada."
-		,"No se ha podido realizar el pag, localidad ya comprada por uno mismo."
-		,"No se ha podido realizar la compra, localidad ya reservada."
-		,"Usuario no permitido para este evento."
+		,"Localidad ocupada. Imposible realizar la compra"
+		,"No se ha podido realizar el pago, la localidad ya la has comprado"
+		,"Localidad reservada. Imposible realizar la compra"
+		,"Usuario no permitido."
 		,"Evento finalizado o cerrado."
 		,"No se puede prerreservar porque quedan menos de T2 minutos."
-		,"No se puede prerreservar porque ya esta prerreservada por uno mismo."
-		,"Grada/Recinto lleno."
+		,"No se puede prerreservar porque la entrada ya esta prerreservada por ti."
+		,"Grada o Recinto lleno."
 		,"Número máximo de entradas prerreservadas."
 		,"Anulacion no valida"};
-
-		System.out.println();
+/*Podemos cambiar los valores de los errores para que sea as sencillo de mostrar*/ 
+		System.out.println(error[Integer.parseInt(idError)-1]);
 
 
 
