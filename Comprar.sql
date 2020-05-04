@@ -1,7 +1,7 @@
 USE taquillavirtual;
 DELIMITER //
 DROP PROCEDURE IF EXISTS comprar//
-CREATE PROCEDURE comprar(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN tipoUsuario varchar(10), in DNI varchar(9), OUT idCompra int)
+CREATE PROCEDURE comprar(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN tipoUsuario varchar(10), in DNI varchar(9), OUT idCompra int OUT Penalizacion int)
 /********************************************/
 /*Meteria otro valor de OUT que sea el de error, ahora mismo idCompra saca, si es correcto, la compra o si fallo el error*/
 /********************************************/
@@ -42,8 +42,10 @@ BEGIN
 
         IF @estado_evento = "Cerrado" OR @estado_evento = "Finalizado" THEN
             SET idCompra = -6; #evento cerrado o Finalizado
+            /*SET Penalizacion = -6; */
         ELSE 
-            SET idCompra = -1; #localidad deteriorada                     
+            SET idCompra = -1; #localidad deteriorada
+            /*SET Penalizacion = -1; */                     
         END IF;
     ELSE 
         SET @compra = concat("SELECT dniCliente into @dni_cliente from Ventas
@@ -62,6 +64,7 @@ BEGIN
                     IF done THEN  
 
                         SET idCompra = -5; #usuarionopermitido 
+                        /*SET Penalizacion = -5; */
                         LEAVE bucleUsuario;
                     ELSE 
 
@@ -77,6 +80,7 @@ BEGIN
 
                             IF @estado_evento = "Cerrado" OR @estado_evento = "Finalizado" THEN
                                 SET idCompra = -6; #evento cerrado o Finalizado
+                                /*SET Penalizacion = -6; */
                                 LEAVE bucleUsuario;
                             ELSE 
 
@@ -91,6 +95,7 @@ BEGIN
 
                                 IF (@ventas_grada >= @aforo_grada) THEN 
                                     SET idCompra = -9;
+                                    /*SET Penalizacion = -9; */
                                     LEAVE bucleUsuario;
 
                                 ELSE 
@@ -106,6 +111,7 @@ BEGIN
 
                                     IF (@ventas_recinto >= @aforo_recinto) THEN 
                                         SET idCompra = -9;
+                                        /*SET Penalizacion = -9; */
                                         LEAVE bucleUsuario;
                                     ELSE
                                         INSERT INTO Ventas VALUES(null, DNI, ID_Evento, @id_recinto, ID_Grada, ID_Localidad, now(), 1);

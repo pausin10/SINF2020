@@ -1,7 +1,7 @@
 USE taquillavirtual;
 DELIMITER //
 DROP PROCEDURE IF EXISTS reservar//
-CREATE PROCEDURE reservar(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN tipoUsuario varchar(10), in DNI varchar(9), OUT idCompra int)
+CREATE PROCEDURE reservar(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN tipoUsuario varchar(10), in DNI varchar(9), OUT idCompra int, OUT Penalizacion int)
 
 /*pagar la prereserva*/
 /********************************************/
@@ -65,6 +65,7 @@ BEGIN
 
     IF (@minute < @T2) THEN
         SET idCompra = -7;
+        /*SET Penalizacion = -7; */
     ELSE 
         IF @estado_localidad = "Deteriorado" THEN 
             SET @evento = concat("SELECT Evento.Estado into @estado_evento from Evento WHERE Evento.idEvento = ", ID_Evento, ";");
@@ -73,8 +74,10 @@ BEGIN
 
             IF @estado_evento = "Cerrado" OR @estado_evento = "Finalizado" THEN
                 SET idCompra = -6; #evento cerrado o Finalizado
+                /*SET Penalizacion = -6; */
             ELSE 
-                SET idCompra = -1; #localidad deteriorada                     
+                SET idCompra = -1; #localidad deteriorada 
+                /*SET Penalizacion = -1; */                    
             END IF;
         ELSE 
 
@@ -92,6 +95,7 @@ BEGIN
                         FETCH cursorUsuario into usuario;
                         IF done THEN  
                             SET idCompra = -5; #usuarionopermitido 
+                            /*SET Penalizacion = -5; */
                             LEAVE bucleUsuario;
                         ELSE 
                             SET @mismo_usuario = 0;
@@ -105,6 +109,7 @@ BEGIN
                                 EXECUTE stmt_evento;
                                 IF @estado_evento = "Cerrado" OR @estado_evento = "Finalizado" THEN
                                     SET idCompra = -6; #evento cerrado o Finalizado
+                                    /*SET Penalizacion = -6; */
                                     LEAVE bucleUsuario;
                                 ELSE 
                                     SET @prerreserva = concat("SELECT COUNT(*) into @entradas_prerreservadas FROM Ventas 
@@ -133,6 +138,7 @@ BEGIN
                                         
                                         IF (@ventas_grada >= @aforo_grada) THEN 
                                             SET idCompra = -9;
+                                            /*SET Penalizacion = -9; */
                                             LEAVE bucleUsuario;
                                         ELSE 
                                             SET @aforo = concat("SELECT COUNT(*) into @ventas_recinto FROM Ventas 
@@ -146,6 +152,7 @@ BEGIN
 
                                             IF (@ventas_recinto >= @aforo_recinto) THEN 
                                                 SET idCompra = -9;
+                                                /*SET Penalizacion = -9; */
                                                 LEAVE bucleUsuario;
                                             ELSE
                                                 INSERT INTO Pagar_Prereservar VALUES(null, DNI, ID_Evento, @id_recinto, ID_Grada, ID_Localidad, now(), 1);
@@ -169,11 +176,14 @@ BEGIN
 
                 IF @entrada_pagada = 1 THEN  
                     SET idCompra = -3; #localidad ya comprada
+                    /*SET Penalizacion = -3; */
                 ELSE 
                     SET idCompra = -8; #localidad ya prerreservada
+                    /*SET Penalizacion = -3; */
                 END IF;    
             ELSE #entrada ya comprada o prerreservada
                 SET idCompra = -2; #localidad ocupada
+                /*SET Penalizacion = -2; */
             END IF;
         END IF;
     END IF;
