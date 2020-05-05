@@ -15,9 +15,9 @@ public class Cliente {
 		try {
 			Scanner scan = new Scanner(System.in);
 			String link = "jdbc:mysql://localhost/";
-			String user = "alvaro";
-			String password = "alvaro9961";
-			String baseDatos = "GrupoC?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false";
+			String user = "root";
+			String password = "root";
+			String baseDatos = "TaquillaVirtual?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false";
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("Base de datos conectada.");
 			Connection conexion = null;
@@ -132,7 +132,7 @@ public class Cliente {
 		try {
 
 			System.out.println("¿Qué evento desea consultar la disponibilidad de localidades?\n");
-			String consulta = "SELECT ev.idEvento,e.titulo from Espectaculo e\n"
+			String consulta = "SELECT ev.idEvento,e.NombreEspectaculo from Espectaculo e\n"
 					+ "INNER join Evento ev on ev.idEspectaculo = e.idEspectaculo\n" + "where estado='abierto'";
 			String id = null;
 			String nombreRecinto = null;
@@ -143,7 +143,7 @@ public class Cliente {
 
 				while (answer.next()) {
 					System.out.println(
-							"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("titulo") + "\n");
+							"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("NombreEspectaculo") + "\n");
 				}
 				System.out.println("Introduzca el id:");
 				id = scan.nextLine();
@@ -218,13 +218,13 @@ public class Cliente {
 
 	private static void listarEspectaculos(Statement state, String sql) {
 		System.out.println("Esta es la lista de eventos disponibles:\n");
-		sql = "SELECT e.titulo, ev.fecha, ev.hora from Espectaculo e\n"
+		sql = "SELECT e.NombreEspectaculo, ev.fecha, ev.hora from Espectaculo e\n"
 				+ "INNER join Evento ev on ev.idEspectaculo = e.idEspectaculo\n" + "where estado='abierto'";
 		try {
 			ResultSet answer = state.executeQuery(sql);
 
 			while (answer.next()) {
-				System.out.println("Evento: " + answer.getString("Titulo") + "   Fecha: " + answer.getString("fecha")
+				System.out.println("Evento: " + answer.getString("NombreEspectaculo") + "   Fecha: " + answer.getString("fecha")
 						+ "  Hora: " + answer.getString("hora") + "\n");
 			}
 		} catch (SQLException e) {
@@ -238,13 +238,13 @@ public class Cliente {
 		System.out.println("Introduzca de que tipo será:");
 		String tipo = scan.nextLine();
 		System.out.println("Introduzca que se celebrará:");
-		String titulo = scan.nextLine();
+		String NombreEspectaculo = scan.nextLine();
 		System.out.println("Introduzca una descripción (opcional):");
 		String descripcion = scan.nextLine();
-		sql = "insert into Espectaculo values(" + null + ",'" + tipo + "','" + titulo + "','" + descripcion + "')";
+		sql = "insert into Espectaculo values(" + null + ",'" + tipo + "','" + NombreEspectaculo + "','" + descripcion + "')";
 		try {
 			state.executeUpdate(sql);
-			return titulo;
+			return NombreEspectaculo;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -253,7 +253,7 @@ public class Cliente {
 
 	private static void anularLocalidad(Scanner scan, Statement state, String sql) {
 		System.out.println("¿De que evento desea anular su entrada?\n");
-		String consulta = "SELECT ev.idEvento,e.titulo from Espectaculo e\n"
+		String consulta = "SELECT ev.idEvento,e.NombreEspectaculo from Espectaculo e\n"
 				+ "INNER join Evento ev on ev.idEspectaculo = e.idEspectaculo\n" + "where estado='abierto'";
 		String id = null;
 		String nombreRecinto = null;
@@ -264,7 +264,7 @@ public class Cliente {
 			ResultSet answer = state.executeQuery(consulta);
 			while (answer.next()) {
 				System.out.println(
-						"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("Titulo") + "\n");
+						"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("NombreEspectaculo") + "\n");
 			}
 			System.out.println("Introduzca el id:");
 			id = scan.nextLine();
@@ -330,7 +330,7 @@ public class Cliente {
 
 	private static void consultarLocalidad(Scanner scan, Statement state, String sql) {
 		System.out.println("¿Qué evento desea consultar la disponibilidad de localidades?\n");
-		String consulta = "SELECT ev.idEvento,e.titulo from Espectaculo e\n"
+		String consulta = "SELECT ev.idEvento,e.NombreEspectaculo from Espectaculo e\n"
 				+ "INNER join Evento ev on ev.idEspectaculo = e.idEspectaculo\n" + "where estado='abierto'";
 		String id = null;
 		String nombreRecinto = null;
@@ -340,7 +340,7 @@ public class Cliente {
 
 			while (answer.next()) {
 				System.out.println(
-						"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("titulo") + "\n");
+						"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("NombreEspectaculo") + "\n");
 			}
 			System.out.println("Introduzca el id:");
 			id = scan.nextLine();
@@ -379,7 +379,7 @@ public class Cliente {
 
 	private static void consultarPrecio(Scanner scan, Statement state, String sql) {
 		System.out.println("Escoja el evento de los siguientes del que quiere consultar los precios.\n");
-		String consulta = "SELECT ev.idEvento,e.titulo from Espectaculo e\n"
+		String consulta = "SELECT ev.idEvento,e.NombreEspectaculo from Espectaculo e\n"
 				+ "INNER join Evento ev on ev.idEspectaculo = e.idEspectaculo\n" + "where estado='abierto'";
 		String id = null;
 		try {
@@ -387,7 +387,7 @@ public class Cliente {
 
 			while (answer.next()) {
 				System.out.println(
-						"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("titulo") + "\n");
+						"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("NombreEspectaculo") + "\n");
 			}
 			System.out.println("Introduzca el id:");
 			id = scan.nextLine();
@@ -413,13 +413,13 @@ public class Cliente {
 
 	private static void cambiarEstado(Scanner scan, Statement state, String sql) {
 		System.out.println("Estos son los eventos y su estado actual:\n");
-		sql = " select Evento.idEvento,Espectaculo.titulo,Evento.fecha,Evento.hora,Evento.Estado from Espectaculo \n"
+		sql = " select Evento.idEvento,Espectaculo.NombreEspectaculo,Evento.fecha,Evento.hora,Evento.Estado from Espectaculo \n"
 				+ "     inner join Evento on Evento.idEspectaculo=Espectaculo.idEspectaculo where Evento.Estado != 'Finalizado' ";
 
 		try {
 			ResultSet answer = state.executeQuery(sql);
 			while (answer.next()) {
-				System.out.println("ID: " + answer.getString("idEvento") + " EVENTO: " + answer.getString("titulo")
+				System.out.println("ID: " + answer.getString("idEvento") + " EVENTO: " + answer.getString("NombreEspectaculo")
 						+ " FECHA: " + answer.getString("fecha") + "  HORA: " + answer.getString("hora") + " ESTADO: "
 						+ answer.getString("Estado"));
 			}
@@ -444,16 +444,16 @@ public class Cliente {
 
 	private static void deleteEspectaculo(Scanner scan, Statement state, String sql) {
 		System.out.println("Lista de Espectáculos disponibles\n");
-		sql = "select idEspectaculo,titulo from Espectaculo";
+		sql = "select idEspectaculo,NombreEspectaculo from Espectaculo";
 		try {
 			ResultSet answer = state.executeQuery(sql);
 			while (answer.next()) {
 				System.out.println(
-						"ID: " + answer.getString("idEspectaculo") + "  ESPECTÁCULO: " + answer.getString("titulo"));
+						"ID: " + answer.getString("idEspectaculo") + "  ESPECTACULO: " + answer.getString("NombreEspectaculo"));
 			}
 			System.out.println("Introduzca el id del espectáculo que desea eliminar:");
 			String id = scan.nextLine();
-			sql = "delete from Espectaculo_Participante where idEspectaculo='" + id + "'";
+			sql = "delete from Participantes where idEspectaculo='" + id + "'";
 			state.executeUpdate(sql);
 			sql = "select idEvento from Evento where idEspectaculo='" + id + "'";
 			answer = state.executeQuery(sql);
@@ -478,13 +478,13 @@ public class Cliente {
 	}
 
 	private static void deleteEvento(Scanner scan, Statement state, String sql) {
-		sql = " select Evento.idEvento,Espectaculo.titulo,Evento.fecha,Evento.hora from Espectaculo \n"
+		sql = " select Evento.idEvento,Espectaculo.NombreEspectaculo,Evento.fecha,Evento.hora from Espectaculo \n"
 				+ "     inner join Evento on Evento.idEspectaculo=Espectaculo.idEspectaculo where Evento.Estado = 'Abierto' ";
 		try {
 			System.out.println("Lista de Eventos disponibles\n");
 			ResultSet answer = state.executeQuery(sql);
 			while (answer.next()) {
-				System.out.println("ID: " + answer.getString("idEvento") + " EVENTO: " + answer.getString("titulo")
+				System.out.println("ID: " + answer.getString("idEvento") + " EVENTO: " + answer.getString("NombreEspectaculo")
 						+ " FECHA: " + answer.getString("fecha") + "  HORA: " + answer.getString("hora"));
 
 			}
@@ -500,9 +500,9 @@ public class Cliente {
 	}
 
 	private static void addEvento(Scanner scan, Statement state, String sql) {
-		String titulo = addEspectaculo(scan, state, sql);
+		String NombreEspectaculo = addEspectaculo(scan, state, sql);
 		String idEspectaculo = null;
-		sql = "select idEspectaculo from Espectaculo where Titulo='" + titulo + "'";
+		sql = "select idEspectaculo from Espectaculo where NombreEspectaculo='" + NombreEspectaculo + "'";
 		try {
 			ResultSet answer = state.executeQuery(sql);
 			while (answer.next()) {
@@ -557,7 +557,7 @@ public class Cliente {
 
 		System.out.println("Seleccione el criterio por el cual quiere filtrar: \n");
 		System.out.println("1. Participante ");
-		System.out.println("2. Titulo del espectáculo");
+		System.out.println("2. Nombre del espectáculo");
 		System.out.println("3. Tipo del espectáculo");
 		System.out.println("4. Fecha");
 		System.out.println("5. Recinto");
@@ -572,10 +572,10 @@ public class Cliente {
 			busqueda(state, sql);
 			break;
 		case 2:
-			System.out.println("Introduzca el titulo del espectáculo:");
+			System.out.println("Introduzca el nombre del espectáculo:");
 			filtrado = scan.nextLine();
-			System.out.println("\n\n--Filtrado por TITULO DEL ESPECTACULO:" + filtrado);
-			sql = "CALL filtrar('Titulo', '" + filtrado.replace(" ", "-") + "');";
+			System.out.println("\n\n--Filtrado por NOMBER DEL ESPECTACULO:" + filtrado);
+			sql = "CALL filtrar('NombreEspectaculo', '" + filtrado.replace(" ", "-") + "');";
 			proc = state.executeQuery(sql);
 			busqueda(state, sql);
 			break;
@@ -632,7 +632,7 @@ public class Cliente {
 				System.out.println("Id del Evento: " + evento.getString("idEvento")
 						+ "\nFecha: " + evento.getString("Fecha")
 						+ "\nHora: " + evento.getString("Hora")
-						+ "\nTitulo del Espectáculo: " + evento.getString("Titulo")
+						+ "\n Nombre del Espectáculo: " + evento.getString("NombreEspectaculo")
 						+ "\nTipo de Espectáculo: " + evento.getString("Tipo")
 						+ "\nDescripcion: " + evento.getString("Descripcion") + "\n");
 				System.out.println(
@@ -773,7 +773,7 @@ public class Cliente {
 		try {
 
 			System.out.println("¿Qué evento desea consultar la disponibilidad de localidades?\n");
-			String consulta = "SELECT ev.idEvento,e.titulo from Espectaculo e\n"
+			String consulta = "SELECT ev.idEvento,e.NombreEspectaculo from Espectaculo e\n"
 					+ "INNER join Evento ev on ev.idEspectaculo = e.idEspectaculo\n" + "where estado='abierto'";
 			String id = null;
 			String nombreRecinto = null;
@@ -784,7 +784,7 @@ public class Cliente {
 
 				while (answer.next()) {
 					System.out.println(
-							"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("titulo") + "\n");
+							"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("NombreEspectaculo") + "\n");
 				}
 				System.out.println("Introduzca el id:");
 				id = scan.nextLine();
