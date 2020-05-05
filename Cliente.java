@@ -39,86 +39,108 @@ public class Cliente {
 	private static void menu(Scanner scan, Statement state) throws SQLException {
 		String sql = null;
 		System.out.println("Escoja que acción desea realizar:");
-		System.out.println(" 1.  Añadir un cliente al sistema");
-		System.out.println(" 2.  Consultar los datos de un cliente");
-		System.out.println(" 3.  Cambiar el estado de un Evento");
-		System.out.println(" 4.  Mostrar eventos disponibles");
-		System.out.println(" 5.  Filtrar Eventos");
-		System.out.println(" 6.  Crear un nuevo Evento");
-		System.out.println(" 7.  Eliminar Evento");
-		System.out.println(" 8.  Eliminar Espectáculo");
-		System.out.println(" 9.  Consultar precio de una localidad");
-		System.out.println(" 10. Consultar localidades disponibles de una Grada en un Evento");
-		System.out.println(" 11. Comprar entrada");
-		System.out.println(" 12. Pre reservar una entrada.");
+		System.out.println(" 1.  Crear un nuevo Espectaculo");
+		System.out.println(" 2.  Eliminar Espectaculo");
+		System.out.println(" 3.  Modificar Tipo usuario de un Evento");    //Hay que hacerla
+		System.out.println(" 4.  Modificar estado de una Localidad");		//Hay que hacerla. Modificar CapacidadMAx de Grada a 0 y
+		System.out.println(" 5.  Eliminar un Evento asociado a un Espectaculo");   //Comprobar resultado de la prueba 2
+		System.out.println(" 6.  Cambiar el estado de un Evento");
+		System.out.println(" 7.  Mostrar eventos disponibles");
+		System.out.println(" 8.  Modificacion del estado de un Evento con las credenciales del cliente");  //Lo mismo que la 6
+		System.out.println(" 9.  Añadir un cliente al sistema");
+		System.out.println(" 10. Consultar los datos de un cliente");
+		System.out.println(" 11. Filtrar Eventos");
+		System.out.println(" 12. Consultar precio de una localidad");   //Añadir tambien restriccion de grada
 		System.out.println(" 13. Anular una compra");
-		System.out.println(" 14. Salir ");
+		System.out.println(" 14. Consultar localidades disponibles de una Grada en un Evento");
+		System.out.println(" 15. Comprar entrada");
+		System.out.println(" 16. Pre reservar una entrada.");
+
+
+
+		System.out.println(" 7.  Eliminar Evento");
+		System.out.println(" 17. Salir ");
 		System.out.println();
 		String respuesta = scan.nextLine();
 		switch (Integer.valueOf(respuesta)) {
 		case 1:
-			System.out.println("Ha seleccionado registrar un nuevo cliente.\n");
-			addCliente(scan, state, sql);
-			break;
-		case 2:
-			System.out.println("Ha seleccionado consultar sus datos personales.\n");
-			buscarCliente(scan, state, sql);
-			break;
-		case 3:
-			System.out.println("Has seleccionado cambiar el estado de un Evento\n");
-			if (comprobarPermisos(scan)) {
-				cambiarEstado(scan, state, sql);
-			}
-			break;
-		case 4:
-			System.out.println("Has seleccionado ver la lista de eventos disponibles\n");
-			listarEspectaculos(state, sql);
-			break;
-		case 5:
-			System.out.println("Has seleccionado filtrar Espectaculos\n");
-			filtarEspectaculos(state, sql, scan);
-			break;
-		case 6:
 			System.out.println("Has seleccionado crear un nuevo Evento.\n");
 			if (comprobarPermisos(scan)) {
 				addEvento(scan, state, sql);
 			}
 			break;
-		case 7:
-			System.out.println("Has seleccionado eliminar un Evento\n");
-			if (comprobarPermisos(scan)) {
-				deleteEvento(scan, state, sql);
-			}
-			break;
-		case 8:
+		case 2:
 			System.out.println("Has seleccionado eliminar un Espectáculo\n");
 			if (comprobarPermisos(scan)) {
 				deleteEspectaculo(scan, state, sql);
 			}
 			break;
+		case 3:
+			
+			break;
+		case 4:
+			
+			break;
+		case 5:
+			
+			break;
+		case 6:
+			System.out.println("Has seleccionado cambiar el estado de un Evento\n");
+			if (comprobarPermisos(scan)) {
+				cambiarEstado(scan, state, sql);
+			}
+			break;
+		case 7:
+			System.out.println("Has seleccionado ver la lista de eventos disponibles\n");
+			listarEspectaculos(state, sql);
+			/*System.out.println("Has seleccionado eliminar un Evento\n");
+			if (comprobarPermisos(scan)) {
+				deleteEvento(scan, state, sql);
+			}*/
+			break;
+		case 8:
+			System.out.println("Has seleccionado cambiar el estado de un Evento\n");
+			if (comprobarPermisos(scan)) {
+				cambiarEstado(scan, state, sql);
+			}
+			break;
 		case 9:
-			System.out.println("Has seleccionado consultar el precio de una Localidad\n");
-			consultarPrecio(scan, state, sql);
+			System.out.println("Ha seleccionado registrar un nuevo cliente.\n");
+			addCliente(scan, state, sql);
+			/*System.out.println("Has seleccionado consultar el precio de una Localidad\n");
+			consultarPrecio(scan, state, sql);*/
 
 			break;
 		case 10:
-			System.out.println("Has seleleccionado consultar las localidades de una Grada en un Evento\n");
-			consultarLocalidad(scan, state, sql);
-
+			System.out.println("Ha seleccionado consultar sus datos personales.\n");
+			buscarCliente(scan, state, sql);
 			break;
 		case 11:
-			System.out.println("Ha seleccionado comprar entrada.\n");
-			comprarEntrada(scan, state, sql);
+			System.out.println("Has seleccionado filtrar Espectaculos\n");
+			filtarEspectaculos(state, sql, scan);
+			
 			break;
 		case 12:
-			System.out.println("Has seleccionado pre reservar una entrada");
-			prereservarEntrada(scan, state, sql);
+			
 			break;
 		case 13:
 			System.out.println("Ha solicitado anular la compra de una/s Localidad\n");
 			anularLocalidad(scan, state, sql);
 			break;
 		case 14:
+			System.out.println("Has seleleccionado consultar las localidades de una Grada en un Evento\n");
+			consultarLocalidad(scan, state, sql);
+			
+			break;
+		case 15:
+			System.out.println("Ha seleccionado comprar entrada.\n");
+			comprarEntrada(scan, state, sql);
+			break;
+		case 16:
+			System.out.println("Has seleccionado pre reservar una entrada");
+			prereservarEntrada(scan, state, sql);
+			break;
+		case 17:
 			System.out.println("Has seleccionado salir.");
 			System.exit(0);
 		default:
@@ -198,13 +220,9 @@ public class Cliente {
 				while (rs.next()) {
 					idError = rs.getString("@idReserva");
 					if (Integer.valueOf(idError) > 0) {
-						System.out.println("Resultado de la compra " + (i + 1) + ": " + idError);
+						System.out.println("Resultado de la Prerreserva " + (i + 1) + ": " + idError);
 					} else {
-						query = "select Descripcion from Error where idError=" + Integer.valueOf(idError);
-						rs = state.executeQuery(query);
-						while (rs.next()) {
-							System.out.println(rs.getString("Descripcion") + "\n");
-						}
+						errores(idError);
 					}
 				}
 				
@@ -537,13 +555,11 @@ public class Cliente {
 		String t1 = scan.nextLine();
 		System.out.println("Minutos hasta el inicio del evento donde está permitida la pre reserva:");
 		String t2 = scan.nextLine();
-		System.out.println("A falta de cuántos minutos las anulaciones tendrán recarga y su valor: ");
-		String t3Penaliza = scan.nextLine();
-		String aux[] = t3Penaliza.split(" ");
-		String t3 = aux[0];
-		String penalizacion = aux[1];
+		System.out.println("A falta de cuántos minutos las anulaciones tendrán recarga: ");
+		String t3 = scan.nextLine();
+		
 		sql = "insert into Evento values(" + null + ",'" + idEspectaculo + "','Abierto','" + fecha + "','" + hora
-				+ "','" + Integer.valueOf(penalizacion) + "','" + Integer.valueOf(t1) + "','" + Integer.valueOf(t2)
+				+ "','" + Integer.valueOf(t1) + "','" + Integer.valueOf(t2)
 				+ "','" + Integer.valueOf(t3) + "')";
 		try {
 			state.executeUpdate(sql);
@@ -830,14 +846,14 @@ public class Cliente {
 /*************************************************************** */
 			for (int i = 0; i < idLocalidadAux.length; i++) {
 				String query = "call comprar(" + Integer.valueOf(id) + "," + Integer.valueOf(idGrada) + ","
-						+ Integer.valueOf(idLocalidadAux[i]) + ",'" + tipo + "','" + dni + "',@idCompra,@Penalizacion);";
+						+ Integer.valueOf(idLocalidadAux[i]) + ",'" + tipo + "','" + dni + "',@idCompra);";
 				ResultSet rs = state.executeQuery(query);
 
-				query = "SELECT @Penalizacion;";
+				query = "SELECT @idCompra;";
 				rs = state.executeQuery(query);
 				String idError = "";
 				while (rs.next()) {
-					idError = rs.getString("@Penalizacion");
+					idError = rs.getString("@idCompra");
 					if (Integer.valueOf(idError) > 0) {
 						System.out.println("Resultado de la compra " + (i + 1) + ": " + idError);
 					} else {
@@ -886,7 +902,7 @@ public class Cliente {
 		,"Número máximo de entradas prerreservadas."
 		,"Anulacion no valida"};
 /*Podemos cambiar los valores de los errores para que sea as sencillo de mostrar*/ 
-		System.out.println(error[-(Integer.parseInt(idError)-1)]);
+		System.out.println(error[-(Integer.parseInt(idError)+1)]);
 
 
 

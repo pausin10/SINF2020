@@ -22,10 +22,9 @@ CREATE TABLE Evento (
     Estado VARCHAR (10) NOT NULL,
     Fecha DATE NOT NULL,
     Hora TIME NOT NULL,
-    Penalizacion INT NOT NULL,
+    TiempoCompra INT NOT NULL,
     TimePrereserva INT NOT NULL,
     TiempoAnulacion INT NOT NULL,
-    TiempoCompra INT NOT NULL,
     FOREIGN KEY (idEspectaculo) REFERENCES Espectaculo (idEspectaculo)
 );
 
@@ -84,7 +83,7 @@ CREATE TABLE Ventas (
     idGrada INT NOT NULL,
     idLocalidad INT NOT NULL,
     fechaCompra TIMESTAMP NOT NULL,
-    comprada ENUM('Si', 'No') NOT NULL,
+    comprada INT NOT NULL,
     PRIMARY KEY (idCompra,dniCliente,idEvento,idRecinto,idGrada,idLocalidad),
     FOREIGN KEY (dniCliente) REFERENCES Cliente (DNI),
     CONSTRAINT fkLocalidad FOREIGN KEY (idRecinto,idGrada,idLocalidad)

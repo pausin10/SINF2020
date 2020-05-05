@@ -1,7 +1,6 @@
-USE taquillavirtual;
 DELIMITER //
 DROP PROCEDURE IF EXISTS reservar//
-CREATE PROCEDURE reservar(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN tipoUsuario varchar(10), in DNI varchar(9), OUT idCompra int, OUT Penalizacion int)
+CREATE PROCEDURE reservar(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN tipoUsuario varchar(10), in DNI varchar(9), OUT idCompra int)
 
 /*pagar la prereserva*/
 /********************************************/
@@ -114,10 +113,10 @@ BEGIN
                                 ELSE 
                                     SET @prerreserva = concat("SELECT COUNT(*) into @entradas_prerreservadas FROM Ventas 
                                     WHERE Ventas.idEvento = ", ID_Evento, " and Ventas.idGrada = ", ID_Grada, " and Ventas.dniCliente = '"
-                                    , DNI,"' and Ventas.pagada = 0;");
+                                    , DNI,"' and Ventas.comprada = 0;");
                                     PREPARE stmt_aforo FROM @prerreserva;
                                     EXECUTE stmt_aforo;
-                                    SET @max = concat("select distinct Grada.MaxPrereserva into @max_prerreservas from Grada natural join Evento_Grada 
+                                    SET @max = concat("select distinct Grada.PrerreservaMax into @max_prerreservas from Grada natural join Evento_Grada 
                                     where Evento_Grada.idEvento= ",ID_Evento," and Evento_Grada.idGrada = ",ID_Grada,";");
 
                                     PREPARE stmt_aforo FROM @max;
@@ -155,7 +154,7 @@ BEGIN
                                                 /*SET Penalizacion = -9; */
                                                 LEAVE bucleUsuario;
                                             ELSE
-                                                INSERT INTO Pagar_Prereservar VALUES(null, DNI, ID_Evento, @id_recinto, ID_Grada, ID_Localidad, now(), 1);
+                                                INSERT INTO Ventas VALUES(null, DNI, ID_Evento, @id_recinto, ID_Grada, ID_Localidad, now(), 0);
                                                 PREPARE id_entrada FROM @select1;
                                                 EXECUTE id_entrada;
                                                 SET idCompra = @entrada;
@@ -170,7 +169,7 @@ BEGIN
                 END;
                 CLOSE cursorUsuario;
             ELSEIF @dni_cliente = DNI THEN #entrada prerreservada por el jicho o comprada
-                SET @compra = concat("SELECT pagada into @entrada_pagada from Ventas WHERE idLocalidad = ", ID_Localidad, " and idGrada = ", ID_Grada, " and idEvento = ", ID_Evento, ";");
+                SET @compra = concat("SELECT comprada into @entrada_pagada from Ventas WHERE idLocalidad = ", ID_Localidad, " and idGrada = ", ID_Grada, " and idEvento = ", ID_Evento, ";");
                 PREPARE stmt_dni FROM @compra;
                 EXECUTE stmt_dni;
 

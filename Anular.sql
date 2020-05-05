@@ -1,4 +1,3 @@
-USE taquillavirtual;
 DELIMITER //
 DROP PROCEDURE IF EXISTS anular//
 CREATE PROCEDURE anular(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN DNI varchar(30), OUT Penalizacion int)

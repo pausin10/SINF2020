@@ -1,10 +1,7 @@
-USE taquillavirtual;
 DELIMITER //
 DROP PROCEDURE IF EXISTS comprar//
-CREATE PROCEDURE comprar(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN tipoUsuario varchar(10), in DNI varchar(9), OUT idCompra int OUT Penalizacion int)
-/********************************************/
-/*Meteria otro valor de OUT que sea el de error, ahora mismo idCompra saca, si es correcto, la compra o si fallo el error*/
-/********************************************/
+CREATE PROCEDURE comprar(IN ID_Evento int, IN ID_Grada int, IN ID_Localidad int, IN tipoUsuario varchar(10), in DNI varchar(9), OUT idCompra int)
+
 BEGIN
 
     DECLARE usuario VARCHAR(10);
@@ -23,7 +20,7 @@ BEGIN
 	SET @entrada_pagada = 0;
     SET @entrada = 0;
 
-    SET @select1 = concat("SELECT Pagar_Prereservar.idCompra into @entrada from Pagar_Prereservar WHERE Ventas.idEvento =  ", ID_Evento,
+    SET @select1 = concat("SELECT Ventas.idCompra into @entrada from Ventas WHERE Ventas.idEvento =  ", ID_Evento,
     " and Ventas.idGrada = ", ID_Grada, " and Ventas.idLocalidad =  ", ID_Localidad, ";");
 
 	SET @obtencion_recinto = concat("SELECT DISTINCT Evento_Grada.idRecinto into @id_recinto from Evento_Grada where Evento_Grada.idEvento = ", ID_Evento, ";");
@@ -100,8 +97,8 @@ BEGIN
 
                                 ELSE 
 
-                                    SET @aforo = concat("SELECT COUNT(*) into @ventas_recinto FROM Pagar_Prereservar 
-												WHERE Pagar_Prereservar.idEvento = ", ID_Evento, " and Pagar_Prereservar.idGrada = ", ID_Grada, ";");
+                                    SET @aforo = concat("SELECT COUNT(*) into @ventas_recinto FROM Ventas 
+												WHERE Ventas.idEvento = ", ID_Evento, " and Ventas.idGrada = ", ID_Grada, ";");
                                     PREPARE stmt_aforo FROM @aforo;
                                     EXECUTE stmt_aforo;
                                     SET @aforo2 = concat("select distinct Recinto.CapacidadMax into @aforo_recinto from Recinto natural join Evento_Grada 
@@ -131,14 +128,14 @@ BEGIN
 
 
         ELSEIF @dni_cliente = DNI THEN #entrada prerreservada por el jicho o comprada
-            SET @compra = concat("SELECT pagada into @entrada_pagada from Ventas WHERE idLocalidad = ", ID_Localidad, " and idGrada = ", ID_Grada, " and idEvento = ", ID_Evento, ";");
+            SET @compra = concat("SELECT comprada into @entrada_pagada from Ventas WHERE idLocalidad = ", ID_Localidad, " and idGrada = ", ID_Grada, " and idEvento = ", ID_Evento, ";");
             PREPARE stmt_dni FROM @compra;
             EXECUTE stmt_dni;
 
-            IF @entrada_pagada = 1 THEN  
+            IF @entrada_pagada = '1' THEN  
                 SET idCompra = -3; #localidad ya comprada
             ELSE 
-				UPDATE Ventas SET pagada = 1 where Ventas.idEvento = ID_Evento and Ventas.idGrada = ID_Grada and Ventas.idLocalidad = ID_Localidad and Ventas.dniCliente = DNI;
+				UPDATE Ventas SET comprada = 1 where Ventas.idEvento = ID_Evento and Ventas.idGrada = ID_Grada and Ventas.idLocalidad = ID_Localidad and Ventas.dniCliente = DNI;
                 PREPARE id_entrada FROM @select1;
                 EXECUTE id_entrada;
                 SET idCompra = @entrada;

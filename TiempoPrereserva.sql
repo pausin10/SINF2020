@@ -1,4 +1,3 @@
-USE taquillavirtual;
 delimiter //
 
 DROP PROCEDURE IF EXISTS timerT1//
