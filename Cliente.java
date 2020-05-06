@@ -41,7 +41,7 @@ public class Cliente {
 		System.out.println("Escoja que acción desea realizar:");
 		System.out.println(" 1.  Crear un nuevo Espectaculo");
 		System.out.println(" 2.  Eliminar Espectaculo");
-		System.out.println(" 3.  Modificar Tipo usuario de un Evento");    //Hay que hacerla
+		System.out.println(" 3.  Eliminar Tipo usuario de un Evento");    
 		System.out.println(" 4.  Modificar estado de una Localidad");		//Hay que hacerla. Modificar CapacidadMAx de Grada a 0 y
 		System.out.println(" 5.  Eliminar un Evento asociado a un Espectaculo");   //Comprobar resultado de la prueba 2
 		System.out.println(" 6.  Cambiar el estado de un Evento");
@@ -55,10 +55,6 @@ public class Cliente {
 		System.out.println(" 14. Consultar localidades disponibles de una Grada en un Evento");
 		System.out.println(" 15. Comprar entrada");
 		System.out.println(" 16. Pre reservar una entrada.");
-
-
-
-		System.out.println(" 7.  Eliminar Evento");
 		System.out.println(" 17. Salir ");
 		System.out.println();
 		String respuesta = scan.nextLine();
@@ -76,13 +72,22 @@ public class Cliente {
 			}
 			break;
 		case 3:
-			
+			System.out.println("Eliminar Tipo usuario de un Evento\n");
+            if (comprobarPermisos(scan)) {
+                modifyEspectaculo(scan, state, sql);
+            }
 			break;
 		case 4:
-			
+			System.out.println("Modificar el Estado de una localidad\n");
+			if (comprobarPermisos(scan)) {
+				modifyLocalidad(scan, state, sql);
+			}
 			break;
 		case 5:
-			
+			System.out.println("Has seleccionado eliminar un Evento\n");
+			if (comprobarPermisos(scan)) {
+				deleteEvento(scan, state, sql);
+			}
 			break;
 		case 6:
 			System.out.println("Has seleccionado cambiar el estado de un Evento\n");
@@ -93,10 +98,6 @@ public class Cliente {
 		case 7:
 			System.out.println("Has seleccionado ver la lista de eventos disponibles\n");
 			listarEspectaculos(state, sql);
-			/*System.out.println("Has seleccionado eliminar un Evento\n");
-			if (comprobarPermisos(scan)) {
-				deleteEvento(scan, state, sql);
-			}*/
 			break;
 		case 8:
 			System.out.println("Has seleccionado cambiar el estado de un Evento\n");
@@ -107,9 +108,6 @@ public class Cliente {
 		case 9:
 			System.out.println("Ha seleccionado registrar un nuevo cliente.\n");
 			addCliente(scan, state, sql);
-			/*System.out.println("Has seleccionado consultar el precio de una Localidad\n");
-			consultarPrecio(scan, state, sql);*/
-
 			break;
 		case 10:
 			System.out.println("Ha seleccionado consultar sus datos personales.\n");
@@ -118,10 +116,10 @@ public class Cliente {
 		case 11:
 			System.out.println("Has seleccionado filtrar Espectaculos\n");
 			filtarEspectaculos(state, sql, scan);
-			
 			break;
 		case 12:
-			
+			System.out.println("Has seleccionado consultar el precio de una Localidad\n");
+			consultarPrecio(scan, state, sql);
 			break;
 		case 13:
 			System.out.println("Ha solicitado anular la compra de una/s Localidad\n");
@@ -234,6 +232,120 @@ public class Cliente {
 
 	}
 
+	private static void modifyLocalidad(Scanner scan, Statement state, String sql){
+		try {
+			sql = "SELECT * from Recinto";
+			ResultSet answer = state.executeQuery(sql);
+
+			while (answer.next()) {
+				System.out.println(
+					"id: "+ answer.getString("idRecinto")
+					+" --- Nombre: "+ answer.getString("Nombre")+"\n");
+						
+			}
+
+			System.out.println("De que Recinto quieres modificar el estado de una localidad?");
+			String recinto = scan.nextLine();
+			sql = "SELECT * from Grada WHERE idRecinto ='"+ recinto +"'";
+			answer = state.executeQuery(sql);
+
+			while (answer.next()) {
+				System.out.println(
+					"id: "+ answer.getString("idGrada")
+					+" --- Nombre: "+ answer.getString("Nombre")+"\n");
+						
+			}
+			System.out.println("A que grada pertenece?");
+			String grada = scan.nextLine();
+			sql = "SELECT * from Localidad WHERE idRecinto ='"+ recinto +"' and idGrada ='" + grada + "'";
+			answer = state.executeQuery(sql);
+
+			while (answer.next()) {
+				System.out.println(
+					"id: "+ answer.getString("idLocalidad")
+					+" --- Estado: "+ answer.getString("Estado")+"\n");
+						
+			}
+
+			System.out.println("Cual es la localidad?");
+			String localidad = scan.nextLine();
+			sql = "SELECT DISTINCT l.idRecinto,l.idGrada, l.idLocalidad, l.Estado  from Localidad l "
+				+"where l.idRecinto='"+recinto+"' and l.idGrada='"+grada+"' and l.idLocalidad='"+localidad+"'";
+			
+			answer = state.executeQuery(sql);
+			while (answer.next()) {
+				System.out.println(
+						" id: " + answer.getString("idRecinto") 
+						+ " --- Grada: " + answer.getString("idGrada")
+						+ " --- Localidad: " + answer.getString("idLocalidad") 
+						+ " --- Estado: "+answer.getString("Estado")+"\n");
+			}
+			System.out.println("Cual es el nuevo estado que le quieres ortorgar? (Libre/Deteriorado)");
+			String estado = scan.nextLine();
+			if(!estado.equals("")){
+				sql="update Localidad set Estado ='"+estado+"' where idRecinto='" + recinto 
+				+ "' and idGrada='"+grada+"' and idLocalidad='"+localidad+"'";
+				state.executeUpdate(sql);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			//TODO: handle exception
+		}
+	}
+
+	private static void modifyEspectaculo(Scanner scan, Statement state, String sql){
+		try{
+			String id = "";
+			String usuario = "";
+			String cambio = "";
+			int aux =0;
+			String gradas ="";
+
+			sql = "SELECT DISTINCT ev.idEvento, es.NombreEspectaculo, es.Tipo from Evento ev "
+				+"INNER JOIN Espectaculo es on es.idEspectaculo = ev.idEspectaculo ";
+			ResultSet answer = state.executeQuery(sql);
+			while (answer.next()) {
+				System.out.println(
+						" id: " + answer.getString("idEvento") 
+						+ " --- Nombre del Espectaculo: " + answer.getString("NombreEspectaculo")
+						+ " --- Tipo: " + answer.getString("Tipo") +"\n");
+			}
+			System.out.println("Que evento (id) quieres modificar?");
+			id = scan.nextLine();
+			sql= "SELECT DISTINCT ev.idEvento ,ev_gr.Usuario, ev_gr.idGrada from Evento ev "
+				+"INNER JOIN Evento_Grada ev_gr on ev_gr.idEvento = ev.idEvento "
+				+"where ev.idEvento='"+id+"'";
+			answer = state.executeQuery(sql);
+			
+			while (answer.next()) {
+				System.out.println(
+						" id: " + answer.getString("idEvento") 
+						+ " --- Tipo de Usuario: " + answer.getString("Usuario") 
+						+ " --- Grada: "+answer.getString("idGrada")+"\n");
+				aux=Integer.parseInt(answer.getString("idGrada"));
+			}
+			
+			if(aux!=1){
+				System.out.println("Hay disponibles : "+aux+" gradas\nA que grada le quieres cambiar el usuario?");
+				gradas=scan.nextLine();
+			}
+			
+			System.out.println("Que tipo de usuario quieres eliminar?");
+			usuario = scan.nextLine();
+			
+			if(id.equals("") || usuario.equals("") || gradas.equals("")){
+				return;
+			}
+			sql="DELETE FROM Evento_Grada where idEvento='" + id 
+				+ "' and Usuario='"+usuario+"' and idGrada='"+gradas+"'";
+			
+			state.executeUpdate(sql);
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 	private static void listarEspectaculos(Statement state, String sql) {
 		System.out.println("Esta es la lista de eventos disponibles:\n");
 		sql = "SELECT e.NombreEspectaculo, ev.fecha, ev.hora from Espectaculo e\n"
@@ -255,8 +367,18 @@ public class Cliente {
 	private static String addEspectaculo(Scanner scan, Statement state, String sql) {
 		System.out.println("Introduzca de que tipo será:");
 		String tipo = scan.nextLine();
+		if(tipo.equals("")){
+			errores("-12");
+			System.out.println();
+			return null;
+		}
 		System.out.println("Introduzca que se celebrará:");
 		String NombreEspectaculo = scan.nextLine();
+		if(NombreEspectaculo.equals("")){
+			errores("-12");
+			System.out.println();
+			return null;
+		}
 		System.out.println("Introduzca una descripción (opcional):");
 		String descripcion = scan.nextLine();
 		sql = "insert into Espectaculo values(" + null + ",'" + tipo + "','" + NombreEspectaculo + "','" + descripcion + "')";
@@ -396,38 +518,63 @@ public class Cliente {
 	}
 
 	private static void consultarPrecio(Scanner scan, Statement state, String sql) {
-		System.out.println("Escoja el evento de los siguientes del que quiere consultar los precios.\n");
-		String consulta = "SELECT ev.idEvento,e.NombreEspectaculo from Espectaculo e\n"
-				+ "INNER join Evento ev on ev.idEspectaculo = e.idEspectaculo\n" + "where estado='abierto'";
-		String id = null;
+  
 		try {
-			ResultSet answer = state.executeQuery(consulta);
-
+			System.out.println("Escoja el evento de los siguientes del que quiere consultar los precios.\n");
+			sql = "SELECT ev.idEvento,e.NombreEspectaculo from Espectaculo e\n"
+				+ "INNER join Evento ev on ev.idEspectaculo = e.idEspectaculo\n"
+				+ "where estado='abierto'";
+			ResultSet answer = state.executeQuery(sql);
+  
 			while (answer.next()) {
 				System.out.println(
-						"id: " + answer.getString("idEvento") + "   Evento: " + answer.getString("NombreEspectaculo") + "\n");
+						"id: " + answer.getString("idEvento")
+						+ " --- Evento: " + answer.getString("NombreEspectaculo") + "\n");
 			}
+  
 			System.out.println("Introduzca el id:");
-			id = scan.nextLine();
-		} catch (SQLException e) {
-
-		}
-
-		sql = "SELECT g.Nombre,e.usuario,e.precio FROM Evento_Grada e\n"
-				+ "INNER JOIN Grada g on g.idGrada=e.idGrada \n" + "and g.idRecinto=e.idRecinto\n"
-				+ "WHERE e.idEvento='" + id + "'";
-		try {
-			ResultSet answer = state.executeQuery(sql);
-
+			String id = scan.nextLine();
+			if(id.equals("")){
+				return;
+			}
+			sql = "SELECT DISTINCT g.Nombre,g.idGrada FROM Evento_Grada e "
+				+ "INNER JOIN Grada g on g.idGrada=e.idGrada " + "and g.idRecinto=e.idRecinto "
+				+ "WHERE e.idEvento='" + id +"'";
+			int sum = 0;
+			answer = state.executeQuery(sql);
 			while (answer.next()) {
-				System.out.println("NombreGrada: " + answer.getString("Nombre") + "   TipoUsuario: "
-						+ answer.getString("usuario") + "   Precio: " + answer.getString("precio") + "\n");
+				System.out.println("id: "+ answer.getString("idGrada")
+					+" --- NombreGrada: " + answer.getString("Nombre") 
+					+"\n");
+				sum++;
+			}
+			if(sum != 1) {
+				System.out.println("Sobre que grada quieres ver el precio");
+				String grada = scan.nextLine();
+				if(grada.equals("")){
+					return;
+				}
+				sql = "SELECT g.Nombre,e.usuario,e.precio FROM Evento_Grada e "
+					+ "INNER JOIN Grada g on g.idGrada=e.idGrada " + "and g.idRecinto=e.idRecinto "
+					+ "WHERE e.idEvento='" + id + "' and e.idGrada='"+grada+"'";
+			} else {
+				sql = "SELECT g.Nombre,e.usuario,e.precio FROM Evento_Grada e "
+					+ "INNER JOIN Grada g on g.idGrada=e.idGrada " + "and g.idRecinto=e.idRecinto "
+					+ "WHERE e.idEvento='" + id + "'";
+			}
+			answer = state.executeQuery(sql);
+  
+			while (answer.next()) {
+				System.out.println("NombreGrada: " + answer.getString("Nombre")
+				+ " --- TipoUsuario: "+ answer.getString("usuario")
+				+ " --- Precio: " + answer.getString("precio") + "\n");
 			}
 		} catch (SQLException e) {
-
+			e.printStackTrace();
 		}
-
+  
 	}
+ 
 
 	private static void cambiarEstado(Scanner scan, Statement state, String sql) {
 		System.out.println("Estos son los eventos y su estado actual:\n");
@@ -531,6 +678,7 @@ public class Cliente {
 		}
 		System.out.println("En que Recinto tendrá lugar:");
 		String recinto = scan.nextLine();
+		
 		System.out.println("Cuál será el aforo máximo:");
 		String aforo = scan.nextLine();
 		String idRecinto = null;
@@ -553,7 +701,7 @@ public class Cliente {
 		String hora = scan.nextLine();
 		System.out.println("Duración máxima de una pre reserva:");
 		String t1 = scan.nextLine();
-		System.out.println("Minutos hasta el inicio del evento donde está permitida la pre reserva:");
+		System.out.println("Minutos hasta el inicio del evento donde está permitida la comprar:");
 		String t2 = scan.nextLine();
 		System.out.println("A falta de cuántos minutos las anulaciones tendrán recarga: ");
 		String t3 = scan.nextLine();
@@ -900,7 +1048,8 @@ public class Cliente {
 		,"No se puede prerreservar porque la entrada ya esta prerreservada por ti."
 		,"Grada o Recinto lleno."
 		,"Número máximo de entradas prerreservadas."
-		,"Anulacion no valida"};
+		,"Anulacion no valida"
+		,"Debe indicar algun dato."};
 /*Podemos cambiar los valores de los errores para que sea as sencillo de mostrar*/ 
 		System.out.println(error[-(Integer.parseInt(idError)+1)]);
 

@@ -13,19 +13,19 @@ p_anular:BEGIN
     DECLARE id_compra int;
     DECLARE id_recinto int;
 
-    SET @obtener_id = concat("SELECT Pagar_Prereservar.idCompra into @id_compra from Pagar_Prereservar 
-    where Pagar_Prereservar.idEvento = ", ID_Evento, " and Pagar_Prereservar.idGrada = " , ID_Grada," and Pagar_Prereservar.idLocalidad = ", ID_Localidad," and Pagar_Prereservar.dniCliente = '",DNI,"';");
+    SET @obtener_id = concat("SELECT Ventas.idCompra into @id_compra from Ventas 
+    where Ventas.idEvento = ", ID_Evento, " and Ventas.idGrada = " , ID_Grada," and Ventas.idLocalidad = ", ID_Localidad," and Ventas.dniCliente = '",DNI,"';");
     PREPARE stmt_obtener_id FROM @obtener_id;
     EXECUTE stmt_obtener_id;
 
-    SET @obtener_id = concat("SELECT Pagar_Prereservar.idRecinto into @id_recinto from Pagar_Prereservar where Pagar_Prereservar.idEvento = ", ID_Evento, " and Pagar_Prereservar.idGrada = " , ID_Grada,
-    " and Pagar_Prereservar.idLocalidad = ", ID_Localidad," and Pagar_Prereservar.dniCliente = '",DNI,"';");
+    SET @obtener_id = concat("SELECT Ventas.idRecinto into @id_recinto from Ventas where Ventas.idEvento = ", ID_Evento, " and Ventas.idGrada = " , ID_Grada,
+    " and Ventas.idLocalidad = ", ID_Localidad," and Ventas.dniCliente = '",DNI,"';");
     PREPARE stmt_obtener_id FROM @obtener_id;
     EXECUTE stmt_obtener_id;
 
     IF @id_compra IS NOT NULL THEN
 
-        SET @obtener_t3 = concat("SELECT Evento.TimePenaliza into @T3 from Evento where Evento.idEvento = ",ID_Evento, " ;");
+        SET @obtener_t3 = concat("SELECT Evento.TiempoAnulacion into @T3 from Evento where Evento.idEvento = ",ID_Evento, " ;");
         PREPARE stmt_obtener_t3 FROM @obtener_t3;
         EXECUTE stmt_obtener_t3;
 
@@ -55,7 +55,7 @@ p_anular:BEGIN
             SET Penalizacion = @penal;
         END IF;
         
-        SET @borrar = concat("DELETE FROM Pagar_Prereservar WHERE idEvento = ", ID_Evento," and idRecinto = ", @id_recinto," and idGrada = ",ID_Grada," and idLocalidad = ",ID_Localidad," and dniCliente = '",DNI,"' ;");
+        SET @borrar = concat("DELETE FROM Ventas WHERE idEvento = ", ID_Evento," and idRecinto = ", @id_recinto," and idGrada = ",ID_Grada," and idLocalidad = ",ID_Localidad," and dniCliente = '",DNI,"' ;");
         PREPARE stmt_borrar FROM @borrar;
         EXECUTE stmt_borrar;
     ELSE 
